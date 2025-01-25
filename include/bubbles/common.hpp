@@ -6,6 +6,7 @@
 #include <memory>
 #include <variant>
 #include <optional>
+#include <fstream>
 
 #include <spdlog/spdlog.h>
 
@@ -18,5 +19,6 @@
 #include <raylib.h>
 #include <raymath.h>
 
-//#include <r3d.h>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 

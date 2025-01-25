@@ -29,19 +29,13 @@ void CustomLog(int msgType, const char *text, va_list args)
 
 int main(int argc, char** args)
 {
-	const struct aiScene* aiModel = aiImportFile(
-			"assets/level_testing/cube.glb", 
-			aiProcess_Triangulate
-		);
-
-	print_scene_node_names(aiModel->mRootNode, "");
 	InitWindow(800, 450, "Bubbles");
 	spdlog::set_level(spdlog::level::trace);
 	//Model model = LoadModel("assets/level_testing/test_0.glb");
-	auto marked = load_marked("assets/level_testing/cube.stl").value();
-	// std::cout << marked.model.meshCount << "\n";
-	// for(auto name : marked.mesh_tags)
-	// 	std::cout << name << "\n";
+	MarkedModel marked = load_marked("assets/level_testing/test_0.gltf").value();
+	std::cout << marked.model.meshCount << "\n";
+	for(auto name : marked.mesh_tags)
+		std::cout << name << "\n";
 	// //try {
 	// //	UnloadModel(marked.model);
 	// //}
