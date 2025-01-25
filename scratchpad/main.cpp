@@ -38,7 +38,7 @@ int main(int argc, char** args)
 	InitWindow(800, 450, "Bubbles");
 	spdlog::set_level(spdlog::level::trace);
 	//Model model = LoadModel("assets/level_testing/test_0.glb");
-	auto marked = load_marked("assets/level_testing/cube.glb").value();
+	auto marked = load_marked("assets/level_testing/cube.stl").value();
 	// std::cout << marked.model.meshCount << "\n";
 	// for(auto name : marked.mesh_tags)
 	// 	std::cout << name << "\n";
