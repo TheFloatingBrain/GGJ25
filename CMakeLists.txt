@@ -30,6 +30,13 @@ FetchContent_Declare(
 	GIT_PROGRESS TRUE
 )
 FetchContent_Declare(
+	assimp
+	GIT_REPOSITORY https://github.com/assimp/assimp.git
+	GIT_TAG v5.4.3
+	GIT_PROGRESS TRUE
+)
+message("Fetched AssImp")
+FetchContent_Declare(
 	raylib3d
 	GIT_REPOSITORY https://github.com/Gamerfiend/raylib-3D.git
 	GIT_TAG "master"
@@ -44,6 +51,8 @@ FetchContent_Declare(
 )
 message("Fetched Bullet3 Physics Engine")
 #
+set(ASSIMP_BUILD_TESTS OFF)
+FetchContent_MakeAvailable(assimp)
 FetchContent_MakeAvailable(raylib)
 message("Raylib Made Availible")
 FetchContent_MakeAvailable(raylib3d)
@@ -70,7 +79,7 @@ add_compile_options(-fconcepts-diagnostics-depth=10)
 file(GLOB LIBRARY_SOURCES source/*.cpp)
 file(GLOB TEST_SOURCES test/*.cpp)
 file(GLOB SCRATCHPAD_SOURCE scratchpad/*.cpp)
-include_directories(include ${raylib3d_SOURCE_DIR} ${bullet3_SOURCE_DIR}/src ${ftxui_SOURCE_DIR}/include ${clipp_SOURCE_DIR}/include)
+include_directories(include ${raylib3d_SOURCE_DIR}/includes ${raylib3d_SOURCE_DIR} ${bullet3_SOURCE_DIR}/src ${ftxui_SOURCE_DIR}/include ${clipp_SOURCE_DIR}/include)
 message("Bullet3 Physics Engine Include Directory Made Availible")
 #add_library(${PROJECT_NAME} ${LIBRARY_SOURCES})
 #target_link_libraries(${PROJECT_NAME} PRIVATE OpenCL af afopencl)
@@ -85,6 +94,7 @@ target_link_libraries(scratchpad PRIVATE
 	BulletDynamics 
 	BulletCollision 
 	LinearMath
+	assimp
 )
 
 # add_executable(test ${TESTS})
