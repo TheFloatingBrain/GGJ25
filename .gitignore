@@ -30,8 +30,11 @@
 *.exe
 *.out
 *.app
+<<<<<<< HEAD
 
 # Folders
 .ccls-cache/
 build/
+out/
+.vs/
 
