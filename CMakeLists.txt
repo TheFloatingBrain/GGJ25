@@ -1,15 +1,16 @@
-cmake_minimum_required(VERSION 3.30.5)
-project(afraylib CXX)
+cmake_minimum_required(VERSION 3.29)
+project(Bubbles CXX)
 set(CMAKE_CXX_STANDARD 23)
 include(FetchContent)
+#
 
 # https://github.com/ArthurSonzogni/FTXUI.git
-FetchContent_Declare(
-	ftxui	
-	GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui.git
-	GIT_TAG v5.0.0
-	GIT_PROGRESS TRUE
-)
+#FetchContent_Declare(
+#	ftxui	
+#	GIT_REPOSITORY https://github.com/ArthurSonzogni/ftxui.git
+#	GIT_TAG v5.0.0
+#	GIT_PROGRESS TRUE
+#)
 FetchContent_Declare(
 	spdlog
 	GIT_REPOSITORY https://github.com/gabime/spdlog.git
@@ -56,7 +57,7 @@ set(BUILD_BULLET2_DEMOS OFF)
 FetchContent_MakeAvailable(bullet3)
 message("Bullet3 Physics Engine Made Availible")
 
-FetchContent_MakeAvailable(ftxui)
+#FetchContent_MakeAvailable(ftxui)
 FetchContent_MakeAvailable(spdlog)
 FetchContent_MakeAvailable(clipp)
 #FetchContent_GetProperties(ftxui)
@@ -76,9 +77,9 @@ message("Bullet3 Physics Engine Include Directory Made Availible")
 add_executable(scratchpad ${SCRATCHPAD_SOURCE})
 add_compile_options("-g")
 target_link_libraries(scratchpad PRIVATE 
-	ftxui::component 
-	ftxui::dom 
-	ftxui::screen
+#	ftxui::component 
+#	ftxui::dom 
+#	ftxui::screen
 	spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
 	raylib 
 	BulletDynamics 
