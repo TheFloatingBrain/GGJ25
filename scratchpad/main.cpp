@@ -1,6 +1,5 @@
 #include <Bubbles/Physics.hpp>
-#include <Bubbles/LoadMarked.hpp>
-#include <Bubbles/MeshUtilities.hpp>
+#include <Bubbles/Character.hpp>
 
 using namespace Bubbles;
 
@@ -29,60 +28,13 @@ void CustomLog(int msgType, const char *text, va_list args)
 
 int main(int argc, char** args)
 {
+	spdlog::set_level(spdlog::level::debug);
+	spdlog::debug("Initializing Window and Raylib Global Settings");
+
 	InitWindow(800, 450, "Bubbles");
-	MarkedModel marked = LoadMarked("assets/level_testing/test_0.gltf").value();
-	spdlog::set_level(spdlog::level::trace);
-	spdlog::debug("Creating Physics World");
-	Physics physicsWorld;
-	spdlog::debug("Creating Objects");
-	auto* meshobj = new PhysicsGameObject(
-			LoadModel("assets/test/cube.glb"), 
-			PhysicsCreationInfo{
-				.startLocation = ::Vector3{0.f, 200.f, 0.f}, 
-				//.orientation = ::Vector3{0.f, 3.14f / 2.f, 0.f}, 
-				.mass = 20.f, .isStatic = false
-			});
-	auto* sphere0 = new PhysicsGameObject(
-			10.f, 
-			PhysicsCreationInfo{
-				.startLocation = ::Vector3{40, 150.f, 40.f}, 
-				.mass = 2000.f, .isStatic = false
-			});
-	auto* secondBar = new PhysicsGameObject(
-			::Vector3{30.f, 4.f, 4.f}, 
-			PhysicsCreationInfo{
-				.startLocation = ::Vector3{-20, 150.f, 0.f}, 
-				.mass = 2000.f, .isStatic = false
-			});
+	DisableCursor();
+	SetTargetFPS(60);
 
-	auto* ball = new PhysicsGameObject(
-			::Vector3{20.f, 2.f, 20.f}, 
-			PhysicsCreationInfo{
-				.startLocation = ::Vector3{0.f, 25.f, 0.f}, 
-				.mass = 2000.f, .isStatic = false
-			});
-
-	auto* ballyboi = new PhysicsGameObject (
-			10,
-			PhysicsCreationInfo{
-				.startLocation = ::Vector3{24.f, 50.f, 0.f}, 
-				.mass = 1000.f, .isStatic = false
-			});
-
-	auto* ground = new PhysicsGameObject (
-			::Vector3{100.f, 1.f, 100.f}, 
-			PhysicsCreationInfo{
-				.startLocation = ::Vector3{0.f, 0.f, 0.f}, 
-				.mass = 0.f, .isStatic = true
-			});
-
-	spdlog::debug("Adding Objects Physics World");
-	physicsWorld.addGameObject(*meshobj);
-	physicsWorld.addGameObject(*sphere0);
-	physicsWorld.addGameObject(*secondBar);
-	physicsWorld.addGameObject(*ball);
-	physicsWorld.addGameObject(*ground);
-	physicsWorld.addGameObject(*ballyboi);
 	spdlog::debug("Creating Camera");
 	Camera3D camera = { 0 };
 	camera.position = Vector3{ 10.0f, 10.0f, 10.0f };
@@ -90,33 +42,59 @@ int main(int argc, char** args)
 	camera.up = Vector3{ 0.0f, 1.0f, 0.0f };
 	camera.fovy = 45.0f;
 	camera.projection = CAMERA_PERSPECTIVE;
-	DisableCursor();
+
+	spdlog::debug("Creating Physics World");
+	Physics physicsWorld;
+
+	spdlog::debug("Creating Materials");
+	//GenImageChecked(256, 256, 24, 24, BLUE, LIGHTBLUE)
+	Image groundImage = GenImageCellular(512, 512, 16);
+	Material groundMaterial = LoadMaterialDefault();
+	Texture groundTexture = LoadTextureFromImage(groundImage);
+	SetMaterialTexture(&groundMaterial, MATERIAL_MAP_DIFFUSE, groundTexture);
+
+	spdlog::debug("Creating Objects");
+	PhysicsGameObject ground(
+		::Vector3{100.f, 10.f, 100.f}, 
+		PhysicsCreationInfo{}, 
+		&groundMaterial
+	);
+	Character character(camera, ::Vector3{0.f, 10.f, 0.f});
 	
-	SetTargetFPS(60);
+	spdlog::debug("Adding Objects Physics World");
+	physicsWorld.addGameObject(character);
+	physicsWorld.addGameObject(ground);
+
+
+	spdlog::debug("Beggining game Loop");
+	
 	while (!WindowShouldClose())
 	{
-        	UpdateCamera(&camera, CAMERA_FREE);
 		physicsWorld.step();
+
+		Controls controls{
+			.forward = IsKeyDown(KEY_W), 
+			.backward = IsKeyDown(KEY_S), 
+			.left = IsKeyDown(KEY_A), 
+			.right = IsKeyDown(KEY_D), 
+			.cameraZoomDelta = -GetMouseWheelMove()
+		};
+		character.update(controls);
         	BeginDrawing();
             		ClearBackground(GRAY);
-			BeginMode3D(camera);
-				meshobj->drawColored(PURPLE);
-				sphere0->drawColored(YELLOW);
-				secondBar->drawColored(RED);
-				ball->drawColored(BLUE);
-				ground->drawColored(GREEN);
-                ballyboi->drawColored(RED);
+			BeginMode3D(character.camera);
+				character.drawColored(YELLOW);
+				ground.draw();//Colored(GREEN);
 			EndMode3D();
 		EndDrawing();
 	}
-	delete ball;
-	delete ground;
+
+	spdlog::debug("Cleaning Up");
 
 	CloseWindow();
-	//Model model = LoadModel("assets/level_testing/test_0.glb");
-	//MarkedModel marked = load_marked("assets/level_testing/test_0.gltf").value();
-	//print_model_info(marked.model);
-	//Physics physics;
+
+	spdlog::debug("Returning");
+
 	return 0;
 }
 

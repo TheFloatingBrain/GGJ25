@@ -297,7 +297,12 @@ namespace Bubbles
 				physicsData(makeRigidBody(info, radius)), 
 				model(LoadModelFromMesh(mesh)) {}
 
-			void drawColored(::Color color) {
+			virtual void draw() {
+				model.transform = MatrixRotateXYZ(getRotation());
+				DrawMesh(mesh, *material, model.transform);
+			}
+
+			virtual void drawColored(::Color color) {
 				model.transform = MatrixRotateXYZ(getRotation());
 				DrawModel(model, getPosition(), 1.f, color);
 			}
