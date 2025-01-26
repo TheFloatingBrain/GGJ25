@@ -38,27 +38,27 @@ int main(int argc, char** args)
 			10.f, 
 			PhysicsCreationInfo{
 				.startLocation = ::Vector3{40, 150.f, 40.f}, 
-				.mass = 100.f, .isStatic = false
+				.mass = 2000.f, .isStatic = false
 			});
 	auto* secondBar = new PhysicsGameObject(
 			::Vector3{30.f, 4.f, 4.f}, 
 			PhysicsCreationInfo{
 				.startLocation = ::Vector3{-20, 150.f, 0.f}, 
-				.mass = 100.f, .isStatic = false
+				.mass = 2000.f, .isStatic = false
 			});
 
 	auto* ball = new PhysicsGameObject(
 			::Vector3{20.f, 2.f, 20.f}, 
 			PhysicsCreationInfo{
 				.startLocation = ::Vector3{0.f, 25.f, 0.f}, 
-				.mass = 100.f, .isStatic = false
+				.mass = 2000.f, .isStatic = false
 			});
 
 	auto* ballyboi = new PhysicsGameObject (
 			10,
 			PhysicsCreationInfo{
 				.startLocation = ::Vector3{0.f, 50.f, 0.f}, 
-				.mass = 1000.f, .isStatic = false
+				.mass = 2000.f, .isStatic = false
 			});
 
 	auto* ground = new PhysicsGameObject (
