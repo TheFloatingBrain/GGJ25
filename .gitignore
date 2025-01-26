@@ -37,3 +37,6 @@ build/
 out/
 .vs/
 .vscode/
+
+# vsbuild pdb files
+*.pdb
