@@ -30,6 +30,7 @@ void CustomLog(int msgType, const char *text, va_list args)
 int main(int argc, char** args)
 {
 	InitWindow(800, 450, "Bubbles");
+	MarkedModel marked = LoadMarked("assets/level_testing/test_0.gltf").value();
 	spdlog::set_level(spdlog::level::trace);
 	spdlog::debug("Creating Physics World");
 	Physics physicsWorld;

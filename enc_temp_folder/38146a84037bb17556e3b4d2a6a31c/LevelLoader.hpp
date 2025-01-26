@@ -1,7 +1,7 @@
 #include <bubbles/common.hpp>
 
 
-PhysicsGameObject *LoadLevel(std::string& levelPath) {
+void LoadLevel(std::string& levelPath) {
 	MarkedModel marked = load_marked("assets/level_testing/test_0.gltf").value();
     PhysicsGameObject meshes[marked.model.meshCount];
 	std::cout << marked.model.meshCount << "\n";
@@ -11,10 +11,10 @@ PhysicsGameObject *LoadLevel(std::string& levelPath) {
                 .startLocation = getAveragePosition(marked, meshIndex),
                 .isStatic = true
             };
-            meshes[meshIndex] = PhysicsGameObject(false, marked.model.meshes[meshIndex], info);
+            meshes[meshIndex] = PhysicsGameObject(false, marked.
+
         }
     }
-    return meshes;
 }
 
 bool isTrackMesh(const std::string& meshName) {

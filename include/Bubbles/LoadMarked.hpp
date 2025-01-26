@@ -17,13 +17,14 @@ namespace Bubbles
 			return std::nullopt;
 		}
 		MarkedModel model; 
-		model.model = LoadModel(path);
+		//model.model = LoadModel(path);
 		std::ifstream gltfStream(path);
 		if(gltfStream.is_open() == false) {
 			spdlog::error("LoadMarked: Failed to open gltf");
 			return std::nullopt;
 		}
 		auto data = json::parse(gltfStream);
+		model.model = LoadModel(path);
 		model.meshTags.resize(model.model.meshCount);
 		for(const auto& node : data["nodes"]) {
 			if(node.contains("mesh") == true)
