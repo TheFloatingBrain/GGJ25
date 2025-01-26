@@ -185,8 +185,10 @@ namespace Bubbles
 				|| controls.forward
 				|| controls.backward
 			);
-			if(directionControlPressed == false)
+			if(directionControlPressed == false) {
 				pressTime = 1;
+				tibyLook = { 0 };
+			}
 			float time = static_cast<float>(pressTime);
 			this->body().setAngularVelocity(delta + (1 / time) * this->body().getAngularVelocity());
 		}
@@ -229,7 +231,8 @@ namespace Bubbles
 		{
 			if(gizmo == true)
 				drawObjectGizmo();
-			auto movementDirection = Vector3Normalize(b2rv(body().getAngularVelocity()));
+			auto movementDirection = Vector3Normalize(b2rv(body().getLinearVelocity()));
+			//movementDirection = Vector3{-movementDirection.x, movementDirection.y};
 			tiby.draw(
 				getPosition() + ::Vector3{0, -radius + .1f, 0}, 
 				directionToYAngle(Vector3Normalize(tibyLook + movementDirection))
