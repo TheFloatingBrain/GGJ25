@@ -1,7 +1,7 @@
-#include <bubbles/Physics.hpp>
-#include <bubbles/load_marked.hpp>
-#include <bubbles/MeshUtilities.hpp>
-#include <bubbles/game_object.hpp>
+#include <Bubbles/Physics.hpp>
+#include <Bubbles/LoadMarked.hpp>
+#include <Bubbles/MeshUtilities.hpp>
+#include <Bubbles/GameObject.hpp>
 
 using namespace Bubbles;
 

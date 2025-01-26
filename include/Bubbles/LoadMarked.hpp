@@ -1,4 +1,4 @@
-#include <bubbles/common.hpp>
+#include <Bubbles/Common.hpp>
 
 #ifndef BUBBLES_LOAD_MARKED_INCLUDE_GUARD
 #define BUBBLES_LOAD_MARKED_INCLUDE_GUARD

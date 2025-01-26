@@ -1,4 +1,4 @@
-#include <bubbles/common.hpp>
+#include <Bubbles/Common.hpp>
 
 #ifndef BUBBLES_MESH_UTILITIES_INCLUDE_GUARD
 #define BUBBLES_MESH_UTILITIES_INCLUDE_GUARD

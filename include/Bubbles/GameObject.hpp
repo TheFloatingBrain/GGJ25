@@ -1,5 +1,5 @@
-#include <bubbles/Physics.hpp>
-#include <bubbles/VectorUtilities.hpp>
+#include <Bubbles/Physics.hpp>
+#include <Bubbles/VectorUtilities.hpp>
 
 #ifndef BUBBLES_GAME_OBJECT_INCLUDE_GUARD
 #define BUBBLES_GAME_OBJECT_INCLUDE_GUARD

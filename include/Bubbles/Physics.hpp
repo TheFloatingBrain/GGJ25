@@ -1,4 +1,4 @@
-#include <bubbles/common.hpp>
+#include <Bubbles/Common.hpp>
 
 #ifndef BUBBLES_PHYSICS_INCLUDE_GUARD
 #define BUBBLES_PHYSICS_INCLUDE_GUARD

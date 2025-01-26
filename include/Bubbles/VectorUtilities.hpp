@@ -1,4 +1,5 @@
-#include <bubbles/common.hpp>
+#include <Bubbles/Common.hpp>
+
 #ifndef BUBBLES_VECTOR_UTILITIES_INCLUDE_GUARD
 #define BUBBLES_VECTOR_UTILITIES_INCLUDE_GUARD
 namespace Bubbles
