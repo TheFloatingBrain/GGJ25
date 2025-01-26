@@ -34,6 +34,13 @@ int main(int argc, char** args)
 	spdlog::debug("Creating Physics World");
 	Physics physicsWorld;
 	spdlog::debug("Creating Objects");
+	auto* meshobj = new PhysicsGameObject(
+			LoadModel("assets/test/cube.glb"), 
+			PhysicsCreationInfo{
+				.startLocation = ::Vector3{0.f, 200.f, 0.f}, 
+				//.orientation = ::Vector3{0.f, 3.14f / 2.f, 0.f}, 
+				.mass = 2000.f, .isStatic = false
+			});
 	auto* sphere0 = new PhysicsGameObject(
 			10.f, 
 			PhysicsCreationInfo{
@@ -69,6 +76,7 @@ int main(int argc, char** args)
 			});
 
 	spdlog::debug("Adding Objects Physics World");
+	physicsWorld.addGameObject(*meshobj);
 	physicsWorld.addGameObject(*sphere0);
 	physicsWorld.addGameObject(*secondBar);
 	physicsWorld.addGameObject(*ball);
@@ -91,6 +99,7 @@ int main(int argc, char** args)
         	BeginDrawing();
             		ClearBackground(GRAY);
 			BeginMode3D(camera);
+				meshobj->drawColored(PURPLE);
 				sphere0->drawColored(YELLOW);
 				secondBar->drawColored(RED);
 				ball->drawColored(BLUE);
