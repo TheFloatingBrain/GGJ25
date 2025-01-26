@@ -47,7 +47,11 @@ namespace Bubbles
 		float cameraDistance;
 		float radius;
 		float torqueScalar;
+		float jumpForce;
+		size_t jumpCoolDownReset = 100;
+		bool gizmo = false;
 		Tiby tiby;
+		Vector3 tibyLook = { 0 };
 		Character(
 			Camera camera_, 
 			::Vector3 position = { 0 }, 
@@ -55,10 +59,17 @@ namespace Bubbles
 			float radius_ = 5.f, 
 			float mass = 10.f, 
 			float cameraDistance_ = 30.f, 
-			float torqueScalar_ = 100.f
+			float torqueScalar_ = 100.f, 
+			float jumpForce_ = 200.f
 		) : PhysicsGameObject(radius_, PhysicsCreationInfo {
 			.startLocation = position, .orientation = orientation, .mass = mass
-		}), camera(camera_), cameraDistance(cameraDistance_),  radius(radius_), torqueScalar(torqueScalar_) {
+		}), 
+		camera(camera_), 
+		cameraDistance(cameraDistance_),  
+		radius(radius_), 
+		torqueScalar(torqueScalar_), 
+		jumpForce(jumpForce_)
+		{
 			body().setSpinningFriction(100.f);
 			body().setRollingFriction(100.f);
 			auto& shape = physicsData.shape.shapeRef();
@@ -82,10 +93,11 @@ namespace Bubbles
 			return result;
 		}
 
-		void update(const Controls controls, Physics& physicsWorld) {
+		void update(const Controls controls, Physics& physicsWorld)
+		{
 			orbitalCameraControls(controls);
-
 			angularVelocityControls(controls);
+			jumpControls(controls);
 		}
 
 		void orbitalCameraControls(const Controls controls)
@@ -114,6 +126,33 @@ namespace Bubbles
 			cameraDistance = (cameraDistance < radius) ? radius : cameraDistance;
 		}
 
+		void jumpControls(const Controls controls)
+		{
+			Vector3 jumpDirection = { 0 };
+			if(controls.jump == true && jumpCoolDown <= 0)
+			{
+				spdlog::debug("JUMP");
+				auto forward = objectForwardVector();
+				auto right = GetCameraRight(&camera);
+				auto up = objectUpVector();
+				jumpDirection = up;
+				if(controls.forward == true)
+					jumpDirection = forward;
+				if(controls.backward == true)
+					jumpDirection = -1.f * forward;
+				if(controls.left == true)
+					jumpDirection = -1.f * right;
+				if(controls.right == true)
+					jumpDirection = right;
+				jumpCoolDown = jumpCoolDownReset;
+				this->body().applyCentralImpulse(
+					r2bv(jumpForce * Vector3Normalize(up + jumpDirection))
+				);
+			}
+			if(jumpCoolDown > 0)
+				--jumpCoolDown;
+		}
+
 		void angularVelocityControls(const Controls controls)
 		{
 			auto forward = objectForwardVector();
@@ -121,18 +160,22 @@ namespace Bubbles
 			auto angularVelocity = this->body().getAngularVelocity();
 			btVector3 delta(0, 0, 0);
 			if(controls.forward == true) {
+				tibyLook = forward;
 				delta = r2bv(right * -torqueScalar);
 				++pressTime;
 			}
 			if(controls.backward == true) {
+				tibyLook = -1.f * forward;
 				delta = r2bv(right * torqueScalar);
 				++pressTime;
 			}
 			if(controls.left == true) {
+				tibyLook = -1.f * right;
 				delta = r2bv(forward * -torqueScalar);
 				++pressTime;
 			}
 			if(controls.right == true) {
+				tibyLook = right;
 				delta = r2bv(forward * torqueScalar);
 				++pressTime;
 			}
@@ -153,7 +196,7 @@ namespace Bubbles
 			auto characterOffset = Vector3{0, radius + .1f, 0};
 			DrawCylinderWiresEx(
 				getPosition() + characterOffset, 
-				getPosition() + characterOffset + objectUpVector() * 3.f, 
+				getPosition() + characterOffset + objectUpVector() * radius * 3.f, 
 				radius / 2.f, 
 				radius / 5.f, 
 				10, 
@@ -161,7 +204,7 @@ namespace Bubbles
 			);
 			DrawCylinderEx(
 				getPosition() + characterOffset,  
-				getPosition() + characterOffset + GetCameraRight(&camera) * 3.f, 
+				getPosition() + characterOffset + GetCameraRight(&camera) * radius * 3.f, 
 				radius / 2.f, 
 				radius / 5.f, 
 				10, 
@@ -169,7 +212,7 @@ namespace Bubbles
 			);
 			DrawCylinderEx(
 				getPosition() + characterOffset,  
-				getPosition() + characterOffset + objectForwardVector() * 3.f, 
+				getPosition() + characterOffset + objectForwardVector() * radius * 3.f, 
 				radius / 2.f, 
 				radius / 5.f, 
 				10, 
@@ -184,16 +227,19 @@ namespace Bubbles
 
 		virtual void drawColored(Color color) override 
 		{
+			if(gizmo == true)
+				drawObjectGizmo();
+			auto movementDirection = Vector3Normalize(b2rv(body().getAngularVelocity()));
 			tiby.draw(
 				getPosition() + ::Vector3{0, -radius + .1f, 0}, 
-				directionToYAngle(objectForwardVector())
+				directionToYAngle(Vector3Normalize(tibyLook + movementDirection))
 			);
 			PhysicsGameObject::drawColored(color);
-			//drawObjectGizmo();
 		}
 
 		protected: 
 			size_t pressTime = 1;
+			size_t jumpCoolDown = 0;
 	};
 }
 

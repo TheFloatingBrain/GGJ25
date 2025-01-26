@@ -84,6 +84,7 @@ int main(int argc, char** args)
 			.backward = IsKeyDown(KEY_S), 
 			.left = IsKeyDown(KEY_A), 
 			.right = IsKeyDown(KEY_D), 
+			.jump = IsKeyDown(KEY_SPACE), 
 			.cameraZoomDelta = -GetMouseWheelMove(), 
 			.cameraOrbitDelta = GetMouseDelta()
 		};
