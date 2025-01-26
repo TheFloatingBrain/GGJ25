@@ -85,7 +85,6 @@ target_link_libraries(scratchpad PRIVATE
 	BulletCollision 
 	LinearMath
 )
-
 # add_executable(test ${TESTS})
 # target_link_libraries(test PRIVATE raylib xtensor xtensor::optimize xtensor::use_xsimd)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
