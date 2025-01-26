@@ -29,7 +29,8 @@ void CustomLog(int msgType, const char *text, va_list args)
 
 int main(int argc, char** args)
 {
-	InitWindow(1600, 900, "Bubbles");
+	InitWindow(800, 450, "Bubbles");
+	MarkedModel marked = LoadMarked("assets/level_testing/test_0.gltf").value();
 	spdlog::set_level(spdlog::level::trace);
 	spdlog::debug("Creating Physics World");
 	Physics physicsWorld;
@@ -39,7 +40,7 @@ int main(int argc, char** args)
 			PhysicsCreationInfo{
 				.startLocation = ::Vector3{0.f, 200.f, 0.f}, 
 				//.orientation = ::Vector3{0.f, 3.14f / 2.f, 0.f}, 
-				.mass = 2000.f, .isStatic = false
+				.mass = 20.f, .isStatic = false
 			});
 	auto* sphere0 = new PhysicsGameObject(
 			10.f, 

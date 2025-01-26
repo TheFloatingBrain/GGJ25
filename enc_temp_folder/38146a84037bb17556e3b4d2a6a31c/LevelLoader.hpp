@@ -1,7 +1,7 @@
 #include <bubbles/common.hpp>
 
 
-inline PhysicsGameObject *LoadLevel(std::string& levelPath) {
+void LoadLevel(std::string& levelPath) {
 	MarkedModel marked = load_marked("assets/level_testing/test_0.gltf").value();
     PhysicsGameObject meshes[marked.model.meshCount];
 	std::cout << marked.model.meshCount << "\n";
@@ -11,13 +11,13 @@ inline PhysicsGameObject *LoadLevel(std::string& levelPath) {
                 .startLocation = getAveragePosition(marked, meshIndex),
                 .isStatic = true
             };
-            meshes[meshIndex] = PhysicsGameObject(false, marked.model.meshes[meshIndex], info);
+            meshes[meshIndex] = PhysicsGameObject(false, marked.
+
         }
     }
-    return meshes;
 }
 
-inline bool isTrackMesh(const std::string& meshName) {
+bool isTrackMesh(const std::string& meshName) {
     // Find the position of the first period
     size_t periodPos = meshName.find('.');
 
@@ -28,7 +28,16 @@ inline bool isTrackMesh(const std::string& meshName) {
     return prefix == "Track";
 }
 
-inline ::Vector3 getAveragePositionA(MarkedModel model, int meshIndex) {
+Vector3 getAveragePosition(MarkedModel model, int meshIndex) {
+    Vector3 averagePosition = Vector3();
+    float *averagePositionA = getAveragePositionA(model, meshIndex);
+    averagePosition.x = averagePositionA[0];
+    averagePosition.y = averagePositionA[1];
+    averagePosition.z = averagePositionA[2];
+    return averagePosition;
+}
+
+float *getAveragePositionA(MarkedModel model, int meshIndex) {
     float averagePosition[3] = {};
     for (int dimIndex = 0; dimIndex < 3; dimIndex++){
         float sum = 0;
@@ -37,9 +46,5 @@ inline ::Vector3 getAveragePositionA(MarkedModel model, int meshIndex) {
         }
         averagePosition[dimIndex] = sum / model.model.meshes[meshIndex].vertexCount;
     }
-    Vector3 averagePosition = Vector3();
-    averagePosition.x = averagePositionA[0];
-    averagePosition.y = averagePositionA[1];
-    averagePosition.z = averagePositionA[2];
     return averagePosition;
 }
