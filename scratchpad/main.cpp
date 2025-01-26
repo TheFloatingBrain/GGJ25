@@ -48,6 +48,12 @@ int main(int argc, char** args)
 				.startLocation = ::Vector3{40, 150.f, 40.f}, 
 				.mass = 2000.f, .isStatic = false
 			});
+	auto* thirdBar = new PhysicsGameObject(
+			::Vector3{4.f, 4.f, 4.f}, 
+			PhysicsCreationInfo{
+				.startLocation = ::Vector3{-20, 10.f, 0.f}, 
+				.mass = 2000.f, .isStatic = false
+			});
 	auto* secondBar = new PhysicsGameObject(
 			::Vector3{30.f, 4.f, 4.f}, 
 			PhysicsCreationInfo{
@@ -79,14 +85,15 @@ int main(int argc, char** args)
 	spdlog::debug("Adding Objects Physics World");
 	physicsWorld.addGameObject(*meshobj);
 	physicsWorld.addGameObject(*sphere0);
+	physicsWorld.addGameObject(*thirdBar);
 	physicsWorld.addGameObject(*secondBar);
 	physicsWorld.addGameObject(*ball);
 	physicsWorld.addGameObject(*ground);
 	physicsWorld.addGameObject(*ballyboi);
 	spdlog::debug("Creating Camera");
 	Camera3D camera = { 0 };
-	camera.position = Vector3{ 10.0f, 10.0f, 10.0f };
-	camera.target = Vector3{ 0.0f, 0.0f, 0.0f };
+	camera.position = Vector3{ 0.0f, 25.0f, 50.0f };
+	camera.target = Vector3{ 0.0f, 10.0f, 0.0f };
 	camera.up = Vector3{ 0.0f, 1.0f, 0.0f };
 	camera.fovy = 45.0f;
 	camera.projection = CAMERA_PERSPECTIVE;
@@ -102,6 +109,7 @@ int main(int argc, char** args)
 			BeginMode3D(camera);
 				meshobj->drawColored(PURPLE);
 				sphere0->drawColored(YELLOW);
+				thirdBar->drawColored(SKYBLUE);
 				secondBar->drawColored(RED);
 				ball->drawColored(BLUE);
 				ground->drawColored(GREEN);
