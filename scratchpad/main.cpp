@@ -37,15 +37,15 @@ int main(int argc, char** args)
 	auto* secondBar = new PhysicsGameObject(
 			::Vector3{30.f, 4.f, 4.f}, 
 			PhysicsCreationInfo{
-				.startLocation = ::Vector3{-35, 150.f, 0.f}, 
-				.mass = 100.f, .isStatic = false
+				.startLocation = ::Vector3{-20, 150.f, 0.f}, 
+				.mass = 2000.f, .isStatic = false
 			});
 
 	auto* ball = new PhysicsGameObject(
 			::Vector3{20.f, 2.f, 20.f}, 
 			PhysicsCreationInfo{
 				.startLocation = ::Vector3{0.f, 25.f, 0.f}, 
-				.mass = 100.f, .isStatic = false
+				.mass = 2000.f, .isStatic = false
 			});
 
 	auto* ballyboi = new PhysicsGameObject (
