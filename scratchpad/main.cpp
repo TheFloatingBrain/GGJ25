@@ -34,6 +34,19 @@ int main(int argc, char** args)
 	spdlog::debug("Creating Physics World");
 	Physics physicsWorld;
 	spdlog::debug("Creating Objects");
+	auto* sphere0 = new PhysicsGameObject(
+			10.f, 
+			PhysicsCreationInfo{
+				.startLocation = ::Vector3{40, 150.f, 40.f}, 
+				.mass = 1.f, .isStatic = false
+			});
+	auto* secondBar = new PhysicsGameObject(
+			::Vector3{30.f, 4.f, 4.f}, 
+			PhysicsCreationInfo{
+				.startLocation = ::Vector3{-20, 150.f, 0.f}, 
+				.mass = 1.f, .isStatic = false
+			});
+
 	auto* ball = new PhysicsGameObject(
 			::Vector3{4.f, 30.f, 4.f}, 
 			PhysicsCreationInfo{
@@ -48,6 +61,8 @@ int main(int argc, char** args)
 				.mass = 0.f, .isStatic = true
 			});
 	spdlog::debug("Adding Objects Physics World");
+	physicsWorld.addGameObject(*sphere0);
+	physicsWorld.addGameObject(*secondBar);
 	physicsWorld.addGameObject(*ball);
 	physicsWorld.addGameObject(*ground);
 	spdlog::debug("Creating Camera");
@@ -67,6 +82,8 @@ int main(int argc, char** args)
         	BeginDrawing();
             		ClearBackground(RAYWHITE);
 			BeginMode3D(camera);
+				sphere0->drawColored(YELLOW);
+				secondBar->drawColored(RED);
 				ball->drawColored(BLUE);
 				ground->drawColored(GREEN);
 			EndMode3D();
