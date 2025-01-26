@@ -281,6 +281,7 @@ namespace Bubbles
 				model(LoadModelFromMesh(mesh)) {}
 
 			void drawColored(::Color color) {
+				model.transform = MatrixRotateXYZ(getRotation());
 				DrawModel(model, getPosition(), 1.f, color);
 			}
 
