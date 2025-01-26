@@ -176,6 +176,10 @@ namespace Bubbles
 		Shape shape;
 		btDefaultMotionState motionState;
 		btRigidBody body;
+
+		PhysicsData(const PhysicsData& other) = default;
+		PhysicsData() = default;
+
 		PhysicsData(
 				Shape& shape_, 
 				PhysicsCreationInfo info
