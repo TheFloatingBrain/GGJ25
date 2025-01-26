@@ -77,9 +77,10 @@ int main(int argc, char** args)
 			.backward = IsKeyDown(KEY_S), 
 			.left = IsKeyDown(KEY_A), 
 			.right = IsKeyDown(KEY_D), 
-			.cameraZoomDelta = -GetMouseWheelMove()
+			.cameraZoomDelta = -GetMouseWheelMove(), 
+			.cameraOrbitDelta = GetMouseDelta()
 		};
-		character.update(controls);
+		character.update(controls, physicsWorld);
         	BeginDrawing();
             		ClearBackground(GRAY);
 			BeginMode3D(character.camera);
