@@ -14,16 +14,22 @@ namespace Bubbles
 
 	struct PhysicsCreationInfo
 	{
-		::Vector3 startLocation, orientation;
-		float mass;
-		bool isStatic;
+		::Vector3 startLocation = { 0 }, orientation = { 0 };
+		float mass = 0.f;
+		bool isStatic = false;
 
-		btDefaultMotionState makeMotionState(btCollisionShape& shape)
+		btDefaultMotionState makeMotionState(auto& shape)
 		{
+			spdlog::trace("PhysicsCreationInfo: Creating Motion State");
 			btVector3 localInertia(0, 0, 0);
-			if(isStatic == false)
+			if(isStatic == false) {
+				spdlog::trace("PhysicsCreationInfo: Calculating Inertia with mass {}", mass);
 				shape.calculateLocalInertia(mass, localInertia);
-			return btDefaultMotionState(makeTransform());
+				spdlog::trace("PhysicsCreationInfo: Inertial Calculated");
+			}
+			btDefaultMotionState state(makeTransform());
+			spdlog::trace("PhysicsCreationInfo: Motion state created");
+			return state;
 		}
 
 		inline btRigidBody::btRigidBodyConstructionInfo makeBodyInfo(
@@ -31,10 +37,13 @@ namespace Bubbles
 				btDefaultMotionState& motionState
 			)
 		{
+			spdlog::trace("PhysicsCreationInfo: Creating Rigid Body Construction Info");
 			btVector3 localInertia(0, 0, 0);
-			return btRigidBody::btRigidBodyConstructionInfo(
+			btRigidBody::btRigidBodyConstructionInfo info(
 				mass, &motionState, &shape, localInertia
 			);
+			spdlog::trace("PhysicsCreationInfo: Creating Rigid Body Construction Info Created");
+			return info;
 		}
 
 		inline btTransform makeTransform() const
@@ -55,12 +64,13 @@ namespace Bubbles
 	{
 		GeometryType type;
 		union {
-			btBoxShape box;
-			btSphereShape sphere;
-			btConvexHullShape convex;
+			btBoxShape* box;
+			btSphereShape* sphere;
+			btConvexHullShape* convex;
 		};
-		void copy(const Shape& other)
+		void copy(Shape& other)
 		{
+			other.owns = false;
 			type = other.type;
 			switch(type)
 			{
@@ -82,14 +92,16 @@ namespace Bubbles
 				}
 			}
 		}
-		Shape(const Shape& other) {
+		bool owns;
+		Shape(Shape& other) {
 			copy(other);
 		}
-		Shape(btBoxShape box_) : type(GeometryType::Box), box(box_) {}
-		Shape(btSphereShape sphere_) : type(GeometryType::Sphere), sphere(sphere_) {}
-		Shape(btConvexHullShape convex_) : type(GeometryType::Convex), convex(convex_) {}
+		Shape() = delete;
+		Shape(btBoxShape box_) : owns(true), type(GeometryType::Box), box(new btBoxShape(box_)) {}
+		Shape(btSphereShape sphere_) : owns(true), type(GeometryType::Sphere), sphere(new btSphereShape(sphere_)) {}
+		Shape(btConvexHullShape convex_) : owns(true), type(GeometryType::Convex), convex(new btConvexHullShape(convex_)) {}
 
-		Shape& operator=(const Shape& other) {
+		Shape& operator=(Shape& other) {
 			copy(other);
 			return *this;
 		}
@@ -99,53 +111,64 @@ namespace Bubbles
 			switch(type)
 			{
 				case GeometryType::Box : {
-					return box;
+					spdlog::trace("Shape: shapeRef returning box");
+					return *box;
 				}
 				case GeometryType::Sphere: {
-					return sphere;
+					spdlog::trace("Shape: shapeRef returning sphere");
+					return *sphere;
 				}
 				case GeometryType::Convex: {
-					return convex;
+					spdlog::trace("Shape: shapeRef returning convex");
+					return *convex;
 				}
-				default : { return box; }
+				default : {
+					spdlog::warn("Shape: shapeRef defaulting");
+					return *box;
+				}
 			}
 		}
 		~Shape()
 		{
+			if(owns == true)
+			{
+				spdlog::trace("Shape: Calling Destructor for CollisionShape");
+				switch(type)
+				{
+					case GeometryType::Box : {
+						delete box;//.~btBoxShape();
+						break;
+					}
+					case GeometryType::Sphere: {
+						delete sphere;//.~btSphereShape();
+						break;
+					}
+					case GeometryType::Convex: {
+						delete convex;//.~btConvexHullShape();
+						break;
+					}
+					default : { delete box; break; }//.~btBoxShape(); break; }
+				}
+				spdlog::trace("Shape: Collision Shape Destructor Called");
+			}
+		}
+		auto visit(auto visitor)
+		{
 			switch(type)
 			{
 				case GeometryType::Box : {
-					box.~btBoxShape();
-					break;
+					return visitor(box);
 				}
 				case GeometryType::Sphere: {
-					sphere.~btSphereShape();
-					break;
+					return visitor(sphere);
 				}
 				case GeometryType::Convex: {
-					convex.~btConvexHullShape();
-					break;
+					return visitor(convex);
 				}
-				default : { box.~btBoxShape(); break; }
+				default : { return visitor(box); }
 			}
 		}
 	};
-
-	//void myfunc(Shape shape)
-	//{
-	//	switch(shape.type)
-	//	{
-	//		case GeometryType::Box : {
-	//			// Do box things
-	//		}
-	//		case GeometryType::Sphere: {
-	//			// Do sphere things
-	//		}
-	//		case GeometryType::Convex: {
-	//			// Do convex hull things
-	//		}
-	//	}
-	//}
 
 
 	struct PhysicsData
@@ -176,12 +199,13 @@ namespace Bubbles
 				);
 			//return std::nullopt;
 		}
-		btDefaultMotionState motionState;
+		spdlog::trace("makeRigidBody: Creating convex shape from Mesh");
 		Shape convex_shape(btConvexHullShape(
 			from.vertices, 
 			from.vertexCount, 
 			sizeof(float) * 3
 		));
+		spdlog::trace("makeRigidBody: Shape Made, returing Physics Data");
 		return PhysicsData(convex_shape, info);
 	}
 
@@ -190,7 +214,9 @@ namespace Bubbles
 			::Vector3 halfExtents
 		)
 	{
+		spdlog::trace("makeRigidBody: Creating box shape");
 		Shape shape(btBoxShape(r2bv(halfExtents)));
+		spdlog::trace("makeRigidBody: Shape Made, returing Physics Data");
 		return PhysicsData(
 			shape, 
 			info
@@ -202,8 +228,9 @@ namespace Bubbles
 			float radius
 		)
 	{
-		btSphereShape sphere(radius);
-		Shape shape(sphere);
+		spdlog::trace("makeRigidBody: Creating sphere shape");
+		Shape shape(btSphereShape{radius});
+		spdlog::trace("makeRigidBody: Shape Made, returing Physics Data");
 		return PhysicsData(shape, info);
 	}
 
