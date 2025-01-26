@@ -29,27 +29,36 @@ void CustomLog(int msgType, const char *text, va_list args)
 
 int main(int argc, char** args)
 {
-	InitWindow(800, 450, "Bubbles");
+	InitWindow(1600, 900, "Bubbles");
 	spdlog::set_level(spdlog::level::trace);
 	spdlog::debug("Creating Physics World");
 	Physics physicsWorld;
 	spdlog::debug("Creating Objects");
 	auto* ball = new PhysicsGameObject(
-			::Vector3{4.f, 30.f, 4.f}, 
+			::Vector3{20.f, 2.f, 20.f}, 
 			PhysicsCreationInfo{
-				.startLocation = ::Vector3{0.f, 150.f, 0.f}, 
+				.startLocation = ::Vector3{0.f, 25.f, 0.f}, 
+				.mass = 1.f, .isStatic = false
+			});
+
+	auto* ballyboi = new PhysicsGameObject (
+			10,
+			PhysicsCreationInfo{
+				.startLocation = ::Vector3{0.f, 50.f, 0.f}, 
 				.mass = 1.f, .isStatic = false
 			});
 
 	auto* ground = new PhysicsGameObject (
-			::Vector3{100.f, 10.f, 100.f}, 
+			::Vector3{100.f, 1.f, 100.f}, 
 			PhysicsCreationInfo{
 				.startLocation = ::Vector3{0.f, 0.f, 0.f}, 
 				.mass = 0.f, .isStatic = true
 			});
+
 	spdlog::debug("Adding Objects Physics World");
 	physicsWorld.addGameObject(*ball);
 	physicsWorld.addGameObject(*ground);
+	physicsWorld.addGameObject(*ballyboi);
 	spdlog::debug("Creating Camera");
 	Camera3D camera = { 0 };
 	camera.position = Vector3{ 10.0f, 10.0f, 10.0f };
@@ -65,10 +74,11 @@ int main(int argc, char** args)
         	UpdateCamera(&camera, CAMERA_FREE);
 		physicsWorld.step();
         	BeginDrawing();
-            		ClearBackground(RAYWHITE);
+            		ClearBackground(GRAY);
 			BeginMode3D(camera);
 				ball->drawColored(BLUE);
 				ground->drawColored(GREEN);
+                ballyboi->drawColored(RED);
 			EndMode3D();
 		EndDrawing();
 	}

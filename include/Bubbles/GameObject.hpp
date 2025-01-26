@@ -58,7 +58,6 @@ namespace Bubbles
 		}
 	};
 
-
 	struct Shape
 	{
 		GeometryType type;
@@ -169,7 +168,6 @@ namespace Bubbles
 		}
 	};
 
-
 	struct PhysicsData
 	{
 		Shape shape;
@@ -185,7 +183,6 @@ namespace Bubbles
 			motionState(info.makeMotionState(shape.shapeRef())), 
 			body(info.makeBodyInfo(shape.shapeRef(), motionState)) {}
 	};
-
 
 	inline PhysicsData makeRigidBody(
 			PhysicsCreationInfo info, 
@@ -263,7 +260,9 @@ namespace Bubbles
 					Material* material_ = nullptr
 				) : 
 				ownsMesh(true), 
-				mesh(GenMeshCube(halfExtents.x, halfExtents.y, halfExtents.z)), 
+				//mesh(GenMeshCube((halfExtents.x)/2, (halfExtents.y)/2, (halfExtents.z)/2)), 
+				//mesh(GenMeshCube(halfExtents.x, halfExtents.y, halfExtents.z)), 
+				mesh(GenMeshCube((halfExtents.x)*2, (halfExtents.y)*2, (halfExtents.z)*2)), 
 				material(material_),
 				physicsData(makeRigidBody(info, halfExtents)), 
 				model(LoadModelFromMesh(mesh)) {}
