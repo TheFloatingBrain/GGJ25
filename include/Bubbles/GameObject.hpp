@@ -1,4 +1,3 @@
-#include <Bubbles/Physics.hpp>
 #include <Bubbles/VectorUtilities.hpp>
 
 #ifndef BUBBLES_GAME_OBJECT_INCLUDE_GUARD
@@ -176,6 +175,8 @@ namespace Bubbles
 		Shape shape;
 		btDefaultMotionState motionState;
 		btRigidBody body;
+		PhysicsData(const PhysicsData& other) = default;
+		PhysicsData() = default;
 		PhysicsData(
 				Shape& shape_, 
 				PhysicsCreationInfo info
@@ -240,6 +241,7 @@ namespace Bubbles
 			Mesh mesh;
 			bool ownsMesh;
 			Material* material;
+			Model model;
 		public:
 			PhysicsData physicsData;
 
@@ -252,7 +254,8 @@ namespace Bubbles
 				ownsMesh(ownsMesh_), 
 				mesh(mesh_), 
 				material(material_),
-				physicsData(makeRigidBody(info, mesh)) {}
+				physicsData(makeRigidBody(info, mesh)), 
+				model(LoadModelFromMesh(mesh)) {}
 
 			PhysicsGameObject(
 					::Vector3 halfExtents, 
@@ -262,7 +265,8 @@ namespace Bubbles
 				ownsMesh(true), 
 				mesh(GenMeshCube(halfExtents.x, halfExtents.y, halfExtents.z)), 
 				material(material_),
-				physicsData(makeRigidBody(info, halfExtents)) {}
+				physicsData(makeRigidBody(info, halfExtents)), 
+				model(LoadModelFromMesh(mesh)) {}
 
 			PhysicsGameObject(
 					float radius, 
@@ -274,14 +278,41 @@ namespace Bubbles
 				ownsMesh(true), 
 				mesh(GenMeshSphere(radius, rings, slices)), 
 				material(material_),
-				physicsData(makeRigidBody(info, radius)) {}
+				physicsData(makeRigidBody(info, radius)), 
+				model(LoadModelFromMesh(mesh)) {}
+
+			void drawColored(::Color color) {
+				DrawModel(model, getPosition(), 1.f, color);
+			}
+
+			btRigidBody& body() {
+				return physicsData.body;
+			}
+
+			const btRigidBody& body() const {
+				return physicsData.body;
+			}
+
+			btTransform getTransform() const 
+			{
+				if(body().getMotionState())
+				{
+					btTransform transform;
+					body().getMotionState()->getWorldTransform(transform);
+					return transform;
+				}
+				else
+					return body().getWorldTransform();
+			}
 			
 			::Vector3 getPosition() const {
-				return b2rv(physicsData.body.getCenterOfMassPosition());
+				auto pos = b2rv(getTransform().getOrigin());
+				//return b2rv(physicsData.body.getCenterOfMassPosition());
+				return pos;
 			}
 
 			::Vector3 getRotation() const {
-				return toRotation(physicsData.body.getOrientation());
+				return toRotation(getTransform().getRotation());
 			}
 	};
 }
