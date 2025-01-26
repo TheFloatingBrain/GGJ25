@@ -1,5 +1,6 @@
 #include <Bubbles/Physics.hpp>
 #include <Bubbles/Character.hpp>
+#include <Bubbles/MeshUtilities.hpp>
 
 using namespace Bubbles;
 
@@ -26,6 +27,9 @@ void CustomLog(int msgType, const char *text, va_list args)
     printf("\n");
 }
 
+
+
+
 int main(int argc, char** args)
 {
 	spdlog::set_level(spdlog::level::debug);
@@ -34,6 +38,16 @@ int main(int argc, char** args)
 	InitWindow(800, 450, "Bubbles");
 	DisableCursor();
 	SetTargetFPS(60);
+
+	spdlog::debug("Creating/Loading Tiby");
+	Tiby tiby;
+
+	spdlog::debug("Creating/Loading Materials");
+	Image groundImage = GenImageCellular(512, 512, 16);
+	Material groundMaterial = LoadMaterialDefault();
+	Texture groundTexture = LoadTextureFromImage(groundImage);
+	SetMaterialTexture(&groundMaterial, MATERIAL_MAP_DIFFUSE, groundTexture);
+
 
 	spdlog::debug("Creating Camera");
 	Camera3D camera = { 0 };
@@ -46,16 +60,9 @@ int main(int argc, char** args)
 	spdlog::debug("Creating Physics World");
 	Physics physicsWorld;
 
-	spdlog::debug("Creating Materials");
-	//GenImageChecked(256, 256, 24, 24, BLUE, LIGHTBLUE)
-	Image groundImage = GenImageCellular(512, 512, 16);
-	Material groundMaterial = LoadMaterialDefault();
-	Texture groundTexture = LoadTextureFromImage(groundImage);
-	SetMaterialTexture(&groundMaterial, MATERIAL_MAP_DIFFUSE, groundTexture);
-
 	spdlog::debug("Creating Objects");
 	PhysicsGameObject ground(
-		::Vector3{100.f, 10.f, 100.f}, 
+		::Vector3{100.f, 0.f, 100.f}, 
 		PhysicsCreationInfo{}, 
 		&groundMaterial
 	);
@@ -83,10 +90,13 @@ int main(int argc, char** args)
 		character.update(controls, physicsWorld);
         	BeginDrawing();
             		ClearBackground(GRAY);
+				BeginBlendMode(BLEND_ALPHA);
 			BeginMode3D(character.camera);
-				character.drawColored(YELLOW);
+				//DrawModel(tiby, {0, 0, 0}, 1.f, RAYWHITE);
 				ground.draw();//Colored(GREEN);
+				character.drawColored({ 135, 60, 190, 128 });
 			EndMode3D();
+			EndBlendMode();
 		EndDrawing();
 	}
 

@@ -51,6 +51,10 @@ namespace Bubbles
 		from.getEulerZYX(rotation.z, rotation.y, rotation.x);
 		return rotation;
 	}
+
+	inline float directionToYAngle(Vector3 direction) {
+		return std::atan2(direction.x, direction.z);
+	}
 }
 #endif // BUBBLES_VECTOR_UTILITIES_INCLUDE_GUARD
 

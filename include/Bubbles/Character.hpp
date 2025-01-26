@@ -11,6 +11,35 @@ namespace Bubbles
 		float orbitSensitivity = 0.003f;
 	};
 
+	struct Tiby
+	{
+		Model tiby;
+		Image bodyImage, hairImage;
+		Texture bodyTexture, hairTexture;
+		Material bodyMaterial, hairMaterial;
+	
+		Tiby()
+		{
+			tiby = LoadModel("assets/characters/tiby/tiby.glb");
+			bodyImage = LoadImage("assets/characters/tiby/Tiby_Texture.png");
+			hairImage = LoadImage("assets/characters/tiby/Tiby_Texture_Hair.png");
+			bodyTexture = LoadTextureFromImage(bodyImage);
+			hairTexture = LoadTextureFromImage(hairImage);
+			bodyMaterial = LoadMaterialDefault();
+			hairMaterial = LoadMaterialDefault();
+			SetMaterialTexture(&bodyMaterial, MATERIAL_MAP_DIFFUSE, bodyTexture);
+			SetMaterialTexture(&hairMaterial, MATERIAL_MAP_DIFFUSE, hairTexture);
+		}
+	
+		void draw(Vector3 position, float yAngle)
+		{
+			auto transform = MatrixRotateY(yAngle)
+				* MatrixTranslate(position.x, position.y, position.z);
+			DrawMesh(tiby.meshes[0], bodyMaterial, transform);
+			DrawMesh(tiby.meshes[1], hairMaterial, transform);
+		}
+	};
+
 
 	struct Character : public PhysicsGameObject
 	{
@@ -18,13 +47,14 @@ namespace Bubbles
 		float cameraDistance;
 		float radius;
 		float torqueScalar;
+		Tiby tiby;
 		Character(
 			Camera camera_, 
 			::Vector3 position = { 0 }, 
 			::Vector3 orientation = { 0 }, 
-			float radius_ = 1.f, 
+			float radius_ = 5.f, 
 			float mass = 10.f, 
-			float cameraDistance_ = 10.f, 
+			float cameraDistance_ = 30.f, 
 			float torqueScalar_ = 100.f
 		) : PhysicsGameObject(radius_, PhysicsCreationInfo {
 			.startLocation = position, .orientation = orientation, .mass = mass
@@ -42,15 +72,13 @@ namespace Bubbles
 			return Vector3Normalize(GetCameraUp(&camera) - GetCameraForward(&camera));
 		}
 
-		::Vector3 objectForwardVector() {
+		::Vector3 objectForwardVector()
+		{
 			auto right = GetCameraRight(&camera);
 			auto up = objectUpVector();
 			auto result = Vector3CrossProduct(up, right);
 			result.y = 0;
 			result = Vector3Normalize(result);
-			//spdlog::debug("Camera Right: {} {} {}", right.x, right.y, right.z);
-			//spdlog::debug("Object Up: {} {} {}", up.x, up.y, up.z);
-			//spdlog::debug("Result : {} {} {}", result.x, result.y, result.z);
 			return result;
 		}
 
@@ -63,12 +91,13 @@ namespace Bubbles
 		void orbitalCameraControls(const Controls controls)
 		{
 			auto cameraOffset = camera.position - camera.target;
-			auto cameraToTarget = Vector3Normalize(cameraOffset);
 			camera.target = this->getPosition();
 			camera.position = camera.target + cameraOffset;
-			//camera.position = camera.target + (
-			//	cameraDistance * cameraToTarget
-			//);
+			cameraOffset = camera.position - camera.target;
+			auto cameraToTarget = Vector3Normalize(cameraOffset);
+			camera.position = camera.target + (
+				cameraDistance * cameraToTarget
+			);
 			CameraYaw(
 					&camera, 
 					-controls.cameraOrbitDelta.x * controls.orbitSensitivity, 
@@ -116,46 +145,12 @@ namespace Bubbles
 			if(directionControlPressed == false)
 				pressTime = 1;
 			float time = static_cast<float>(pressTime);
-			//spdlog::debug("Time {}", time);
-//* time * time +
 			this->body().setAngularVelocity(delta + (1 / time) * this->body().getAngularVelocity());
-			//torqueScalar = b2rv(delta);
-		}
-
-		void torqueControls(const Controls controls)
-		{
-			auto torqueShave = -.1 * body().getTotalTorque();
-			auto forward = objectForwardVector();
-			auto right = GetCameraRight(&camera);
-			Vector3 delta = b2rv(torqueShave);
-			if(controls.forward == true) {
-				delta = right * -torqueScalar ;
-				++pressTime;
-			}
-			if(controls.backward == true) {
-				delta = right * torqueScalar ;
-				++pressTime;
-			}
-			if(controls.left == true) {
-				delta = forward * -torqueScalar ;
-				++pressTime;
-			}
-			if(controls.right == true) {
-				delta = forward * torqueScalar ;
-				++pressTime;
-			}
-			if(!(controls.right && controls.left && controls.forward && controls.backward))
-				pressTime = 0;
-			float time = static_cast<float>(pressTime);
-			//delta = delta + -.1 * torqueDelta;
-			this->body().setAngularFactor(r2bv(delta) * time * time * .5);
-			//torqueDelta = torqueDelta + delta;
 		}
 
 		void drawObjectGizmo()
 		{
 			auto characterOffset = Vector3{0, radius + .1f, 0};
-			BeginBlendMode(BLEND_ALPHA);
 			DrawCylinderWiresEx(
 				getPosition() + characterOffset, 
 				getPosition() + characterOffset + objectUpVector() * 3.f, 
@@ -180,14 +175,23 @@ namespace Bubbles
 				10, 
 				GREEN
 			);
-			EndBlendMode();
+		}
+
+		void exportMesh(const char* fileName) {
+			spdlog::info("Exporting mesh to file {}", fileName);
+			ExportMesh(mesh, fileName);
 		}
 
 		virtual void drawColored(Color color) override 
 		{
+			tiby.draw(
+				getPosition() + ::Vector3{0, -radius + .1f, 0}, 
+				directionToYAngle(objectForwardVector())
+			);
 			PhysicsGameObject::drawColored(color);
-			drawObjectGizmo();
+			//drawObjectGizmo();
 		}
+
 		protected: 
 			size_t pressTime = 1;
 	};
