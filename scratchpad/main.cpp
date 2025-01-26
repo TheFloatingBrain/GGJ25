@@ -35,9 +35,9 @@ int main(int argc, char** args)
 	Physics physicsWorld;
 	spdlog::debug("Creating Objects");
 	auto* ball = new PhysicsGameObject(
-			::Vector3{10.f, 10.f, 10.f}, 
+			::Vector3{4.f, 30.f, 4.f}, 
 			PhysicsCreationInfo{
-				.startLocation = ::Vector3{0.f, 50.f, 0.f}, 
+				.startLocation = ::Vector3{0.f, 150.f, 0.f}, 
 				.mass = 1.f, .isStatic = false
 			});
 
@@ -52,9 +52,9 @@ int main(int argc, char** args)
 	physicsWorld.addGameObject(*ground);
 	spdlog::debug("Creating Camera");
 	Camera3D camera = { 0 };
-	camera.position = (Vector3){ 10.0f, 10.0f, 10.0f };
-	camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
-	camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
+	camera.position = Vector3{ 10.0f, 10.0f, 10.0f };
+	camera.target = Vector3{ 0.0f, 0.0f, 0.0f };
+	camera.up = Vector3{ 0.0f, 1.0f, 0.0f };
 	camera.fovy = 45.0f;
 	camera.projection = CAMERA_PERSPECTIVE;
 	DisableCursor();
