@@ -97,6 +97,18 @@ target_link_libraries(character_scratchpad PRIVATE
 	BulletCollision 
 	LinearMath
 )
+add_executable(physics_scratchpad scratchpad/physics_scratchpad.cpp)
+add_compile_options("-g")
+target_link_libraries(physics_scratchpad PRIVATE 
+#	ftxui::component 
+#	ftxui::dom 
+#	ftxui::screen
+	spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
+	raylib 
+	BulletDynamics 
+	BulletCollision 
+	LinearMath
+)
 # add_executable(test ${TESTS})
 # target_link_libraries(test PRIVATE raylib xtensor xtensor::optimize xtensor::use_xsimd)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
