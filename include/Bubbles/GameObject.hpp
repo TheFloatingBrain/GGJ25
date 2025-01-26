@@ -17,13 +17,15 @@ namespace Bubbles
 		float mass = 0.f;
 		bool isStatic = false;
 
+
 		btDefaultMotionState makeMotionState(auto& shape)
 		{
 			spdlog::trace("PhysicsCreationInfo: Creating Motion State");
-			btVector3 localInertia(0, 0, 0);
+			btVector3 localInertia_;
+			shape.calculateLocalInertia(mass, localInertia_);
 			if(isStatic == false) {
 				spdlog::trace("PhysicsCreationInfo: Calculating Inertia with mass {}", mass);
-				shape.calculateLocalInertia(mass, localInertia);
+				shape.calculateLocalInertia(mass, localInertia_);
 				spdlog::trace("PhysicsCreationInfo: Inertial Calculated");
 			}
 			btDefaultMotionState state(makeTransform());
@@ -37,9 +39,10 @@ namespace Bubbles
 			)
 		{
 			spdlog::trace("PhysicsCreationInfo: Creating Rigid Body Construction Info");
-			btVector3 localInertia(0, 0, 0);
+			btVector3 localInertia_;
+			shape.calculateLocalInertia(mass, localInertia_);
 			btRigidBody::btRigidBodyConstructionInfo info(
-				mass, &motionState, &shape, localInertia
+				mass, &motionState, &shape, localInertia_
 			);
 			spdlog::trace("PhysicsCreationInfo: Creating Rigid Body Construction Info Created");
 			return info;
@@ -181,7 +184,14 @@ namespace Bubbles
 			) : 
 			shape(shape_), 
 			motionState(info.makeMotionState(shape.shapeRef())), 
-			body(info.makeBodyInfo(shape.shapeRef(), motionState)) {}
+			body(info.makeBodyInfo(shape.shapeRef(), motionState))
+		{
+			//body.setCollisionFlags(
+			//	//btCollisionObject::CF_KINEMATIC_OBJECT |
+			//	btCollisionObject::CF_CHARACTER_OBJECT
+			//	//| btCollisionObject::CF_STATIC_OBJECT
+			//);
+		}
 	};
 
 	inline PhysicsData makeRigidBody(
@@ -241,6 +251,18 @@ namespace Bubbles
 			Model model;
 		public:
 			PhysicsData physicsData;
+
+			PhysicsGameObject(
+					Model model_, 
+					PhysicsCreationInfo info, 
+					Material* material_ = nullptr, 
+					size_t meshIndex = 0
+				) : 
+				ownsMesh(true), 
+				mesh(model_.meshes[meshIndex]), 
+				material(material_),
+				physicsData(makeRigidBody(info, mesh)), 
+				model(LoadModelFromMesh(mesh)) {}
 
 			PhysicsGameObject(
 					bool ownsMesh_, 
