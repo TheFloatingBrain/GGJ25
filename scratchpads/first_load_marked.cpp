@@ -1,9 +1,8 @@
 #include <bubbles/Physics.hpp>
 #include <bubbles/load_marked.hpp>
-#include <bubbles/MeshUtilities.hpp>
-#include <bubbles/game_object.hpp>
-
-using namespace Bubbles;
+//#define R3D_ASSIMP_SUPPORT
+//#define R3D_IMPLEMENTATION
+//#include <r3d.h>
 
 
 void CustomLog(int msgType, const char *text, va_list args)
@@ -17,7 +16,7 @@ void CustomLog(int msgType, const char *text, va_list args)
 
     switch (msgType)
     {
-        case LOG_INFO: ("[INFO] : "); break;
+        case LOG_INFO: printf("[INFO] : "); break;
         case LOG_ERROR: printf("[ERROR]: "); break;
         case LOG_WARNING: printf("[WARN] : "); break;
         case LOG_DEBUG: printf("[DEBUG]: "); break;
@@ -33,9 +32,16 @@ int main(int argc, char** args)
 	InitWindow(800, 450, "Bubbles");
 	spdlog::set_level(spdlog::level::trace);
 	//Model model = LoadModel("assets/level_testing/test_0.glb");
-	//MarkedModel marked = load_marked("assets/level_testing/test_0.gltf").value();
-	//print_model_info(marked.model);
-	//Physics physics;
+	MarkedModel marked = load_marked("assets/level_testing/test_0.gltf").value();
+	std::cout << marked.model.meshCount << "\n";
+	for(auto name : marked.mesh_tags)
+		std::cout << name << "\n";
+	// //try {
+	// //	UnloadModel(marked.model);
+	// //}
+	// //catch(...) {
+	// //}
+	Physics physics;
 	return 0;
 }
 
