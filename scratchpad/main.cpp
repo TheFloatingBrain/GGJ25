@@ -1,5 +1,6 @@
 #include <bubbles/Physics.hpp>
 #include <bubbles/load_marked.hpp>
+#include <bubbles/LevelLoader.hpp>
 //#define R3D_ASSIMP_SUPPORT
 //#define R3D_IMPLEMENTATION
 //#include <r3d.h>

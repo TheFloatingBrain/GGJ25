@@ -1,15 +1,16 @@
 #include <bubbles/common.hpp>
 
 
-void LoadLevel(String levelPath) {
+void LoadLevel(std::string& levelPath) {
 	MarkedModel marked = load_marked("assets/level_testing/test_0.gltf").value();
 	std::cout << marked.model.meshCount << "\n";
-    for (int meshIndex = 0; i < marked.model.meshCount; i++) {
-        if (isTrackMesh(name)) {
+    for (int meshIndex = 0; meshIndex < marked.model.meshCount; meshIndex++) {
+        //if (isTrackMesh(name)) {
 
-        }
+        //}
     }
 }
+
 bool isTrackMesh(const std::string& meshName) {
     // Find the position of the first period
     size_t periodPos = meshName.find('.');
@@ -20,7 +21,24 @@ bool isTrackMesh(const std::string& meshName) {
     // Check if the prefix is "Track"
     return prefix == "Track";
 }
-float getAveragePosition(MarkedModel model, int meshIndex) {
-    auto vertices = model.model.meshes[i].vertices[0];
-    std::cout << "something";
+
+Vector3 getAveragePosition(MarkedModel model, int meshIndex) {
+    Vector3 averagePosition = Vector3();
+    float *averagePositionA = getAveragePositionA(model, meshIndex);
+    averagePosition.x = averagePositionA[0];
+    averagePosition.y = averagePositionA[1];
+    averagePosition.z = averagePositionA[2];
+    return averagePosition;
+}
+
+float *getAveragePositionA(MarkedModel model, int meshIndex) {
+    float averagePosition[3] = {};
+    for (int dimIndex = 0; dimIndex < 3; dimIndex++){
+        float sum = 0;
+        for (int verticeIndex = 0; verticeIndex < model.model.meshes[meshIndex].vertexCount; verticeIndex += 3) {
+            sum += model.model.meshes[meshIndex].vertices[verticeIndex + dimIndex];
+        }
+        averagePosition[dimIndex] = sum / model.model.meshes[meshIndex].vertexCount;
+    }
+    return averagePosition;
 }
