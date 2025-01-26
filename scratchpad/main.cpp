@@ -76,11 +76,8 @@ int main(int argc, char** args)
 			});
 
 	spdlog::debug("Adding Objects Physics World");
-<<<<<<< HEAD
 	physicsWorld.addGameObject(*meshobj);
 	physicsWorld.addGameObject(*sphere0);
-=======
->>>>>>> 109fe3293ad914f16d1b0a6c6e7959a935a9fd45
 	physicsWorld.addGameObject(*secondBar);
 	physicsWorld.addGameObject(*ball);
 	physicsWorld.addGameObject(*ground);
@@ -102,11 +99,8 @@ int main(int argc, char** args)
         	BeginDrawing();
             		ClearBackground(GRAY);
 			BeginMode3D(camera);
-<<<<<<< HEAD
 				meshobj->drawColored(PURPLE);
 				sphere0->drawColored(YELLOW);
-=======
->>>>>>> 109fe3293ad914f16d1b0a6c6e7959a935a9fd45
 				secondBar->drawColored(RED);
 				ball->drawColored(BLUE);
 				ground->drawColored(GREEN);
