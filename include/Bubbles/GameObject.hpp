@@ -20,7 +20,7 @@ namespace Bubbles
 		btDefaultMotionState makeMotionState(auto& shape)
 		{
 			spdlog::trace("PhysicsCreationInfo: Creating Motion State");
-			btVector3 localInertia(0, 0, 0);
+			btVector3 localInertia(0.f, 0.f, 0.f);
 			if(isStatic == false) {
 				spdlog::trace("PhysicsCreationInfo: Calculating Inertia with mass {}", mass);
 				shape.calculateLocalInertia(mass, localInertia);
@@ -37,7 +37,7 @@ namespace Bubbles
 			)
 		{
 			spdlog::trace("PhysicsCreationInfo: Creating Rigid Body Construction Info");
-			btVector3 localInertia(0, 0, 0);
+			btVector3 localInertia(0.f, 0.f, 0.f);
 			btRigidBody::btRigidBodyConstructionInfo info(
 				mass, &motionState, &shape, localInertia
 			);
@@ -181,7 +181,9 @@ namespace Bubbles
 			) : 
 			shape(shape_), 
 			motionState(info.makeMotionState(shape.shapeRef())), 
-			body(info.makeBodyInfo(shape.shapeRef(), motionState)) {}
+			body(info.makeBodyInfo(shape.shapeRef(), motionState)) {
+				//body.setFriction(0.9f);
+			}
 	};
 
 	inline PhysicsData makeRigidBody(
