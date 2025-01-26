@@ -37,3 +37,4 @@ build/
 out/
 .vs/
 
+.vscode/launch.json
