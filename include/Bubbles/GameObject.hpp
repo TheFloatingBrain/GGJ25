@@ -184,14 +184,9 @@ namespace Bubbles
 			) : 
 			shape(shape_), 
 			motionState(info.makeMotionState(shape.shapeRef())), 
-			body(info.makeBodyInfo(shape.shapeRef(), motionState))
-		{
-			//body.setCollisionFlags(
-			//	//btCollisionObject::CF_KINEMATIC_OBJECT |
-			//	btCollisionObject::CF_CHARACTER_OBJECT
-			//	//| btCollisionObject::CF_STATIC_OBJECT
-			//);
-		}
+			body(info.makeBodyInfo(shape.shapeRef(), motionState)) {
+				//body.setFriction(0.9f);
+			}
 	};
 
 	inline PhysicsData makeRigidBody(

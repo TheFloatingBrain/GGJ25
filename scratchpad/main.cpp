@@ -64,8 +64,8 @@ int main(int argc, char** args)
 	auto* ballyboi = new PhysicsGameObject (
 			10,
 			PhysicsCreationInfo{
-				.startLocation = ::Vector3{0.f, 50.f, 0.f}, 
-				.mass = 2000.f, .isStatic = false
+				.startLocation = ::Vector3{24.f, 50.f, 0.f}, 
+				.mass = 1000.f, .isStatic = false
 			});
 
 	auto* ground = new PhysicsGameObject (
@@ -76,8 +76,11 @@ int main(int argc, char** args)
 			});
 
 	spdlog::debug("Adding Objects Physics World");
+<<<<<<< HEAD
 	physicsWorld.addGameObject(*meshobj);
 	physicsWorld.addGameObject(*sphere0);
+=======
+>>>>>>> 109fe3293ad914f16d1b0a6c6e7959a935a9fd45
 	physicsWorld.addGameObject(*secondBar);
 	physicsWorld.addGameObject(*ball);
 	physicsWorld.addGameObject(*ground);
@@ -99,8 +102,11 @@ int main(int argc, char** args)
         	BeginDrawing();
             		ClearBackground(GRAY);
 			BeginMode3D(camera);
+<<<<<<< HEAD
 				meshobj->drawColored(PURPLE);
 				sphere0->drawColored(YELLOW);
+=======
+>>>>>>> 109fe3293ad914f16d1b0a6c6e7959a935a9fd45
 				secondBar->drawColored(RED);
 				ball->drawColored(BLUE);
 				ground->drawColored(GREEN);
