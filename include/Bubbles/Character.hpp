@@ -23,12 +23,17 @@ namespace Bubbles
 			float radius_ = 1.f, 
 			float mass = 1.f, 
 			float cameraDistance_ = 10.f, 
-			float torqueScalar_ = 1000.f
+			float torqueScalar_ = 100.f
 		) : PhysicsGameObject(radius_, PhysicsCreationInfo {
 			.startLocation = position, .orientation = orientation, .mass = mass
 		}), camera(camera_), cameraDistance(cameraDistance_),  radius(radius_), torqueScalar(torqueScalar_) {
 			body().setSpinningFriction(.1f);
 			body().setRollingFriction(1.f);
+			auto& shape = physicsData.shape.shapeRef();
+			body().setAnisotropicFriction(
+					shape.getAnisotropicRollingFrictionDirection(), 
+					btCollisionObject::CF_ANISOTROPIC_ROLLING_FRICTION
+				);
 		}
 
 		void update(const Controls controls)
