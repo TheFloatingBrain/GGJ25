@@ -47,7 +47,7 @@ namespace Bubbles
 		float radius;
 		float torqueScalar;
 		float jumpForce;
-		size_t jumpCoolDownReset = 100;
+		size_t jumpCoolDownReset = 200;
 		bool gizmo = true;
 		Tiby tiby;
 		Vector3 tibyLook = { 0 };
@@ -128,7 +128,7 @@ namespace Bubbles
 		void jumpControls(const Controls controls)
 		{
 			Vector3 jumpDirection = { 0 };
-			if((controls.jump == true && jumpCoolDown <= 0) && (body().getLinearVelocity().getY() < (EPSILON)))
+			if((controls.jump == true && jumpCoolDown <= 0) && (std::abs(body().getLinearVelocity().getY()) < (EPSILON * 10.f)))
 			{
 
 				// This seems flawed. There shouldn't be a need to change the direction based on what direction you're pressing.
@@ -137,18 +137,17 @@ namespace Bubbles
 				auto right = GetCameraRight(&camera);
 				auto up = ::Vector3 {0,1,0};
 				jumpDirection = up;
-				//if(controls.forward == true)
-				//	jumpDirection = forward;
-				//if(controls.backward == true)
-				//	jumpDirection = -1.f * forward;
-				//if(controls.left == true)
-				//	jumpDirection = -1.f * right;
-				//if(controls.right == true)
-				//	jumpDirection = right;
+				if(controls.forward == true)
+					jumpDirection = forward;
+				if(controls.backward == true)
+					jumpDirection = -1.f * forward;
+				if(controls.left == true)
+					jumpDirection = -1.f * right;
+				if(controls.right == true)
+					jumpDirection = right;
 				jumpCoolDown = jumpCoolDownReset;
 				this->body().applyCentralImpulse(
-					//r2bv(jumpForce * Vector3Normalize(up + jumpDirection))
-					r2bv(jumpForce * up)
+					r2bv(jumpForce * Vector3Normalize(up + jumpDirection))
 				);
 			}
 			if(jumpCoolDown > 0)
