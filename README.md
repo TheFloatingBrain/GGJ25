@@ -32,12 +32,12 @@ ln -s assets ../assets
 ensure assets is accable from the same directory as the executable then
 
 ```
-.\character_scratchpad
+./character_scratchpad
 ```
 or
 
 ```
-.\physics_scratchpad
+./physics_scratchpad
 ```
 
 
