@@ -67,4 +67,4 @@ or
 
 # Credit
 
-Credit to https://opengameart.org/content/tiby-3d-rigged-model for the Character Model!
+Credit to Open Game Art User [PINKCANON](https://opengameart.org/users/pinkcannon) for the [Character Model](https://opengameart.org/content/tiby-3d-rigged-model)!
