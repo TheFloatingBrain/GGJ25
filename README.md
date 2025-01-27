@@ -9,6 +9,7 @@
  - Mini 3D Game engine with Physics
  - Physics Demo
  - Character Demo
+ - Basic Object/Level Loading
 
 
 # Art Credit
