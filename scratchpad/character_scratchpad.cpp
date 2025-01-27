@@ -35,9 +35,9 @@ int main(int argc, char** args)
 	spdlog::set_level(spdlog::level::debug);
 	spdlog::debug("Initializing Window and Raylib Global Settings");
 
-	InitWindow(800, 450, "Bubbles");
+	InitWindow(1600, 900, "Bubbles");
 	DisableCursor();
-	SetTargetFPS(60);
+	SetTargetFPS(120);
 
 	spdlog::debug("Creating/Loading Tiby");
 	Tiby tiby;
@@ -54,7 +54,7 @@ int main(int argc, char** args)
 	camera.position = Vector3{ 10.0f, 10.0f, 10.0f };
 	camera.target = Vector3{ 0.0f, 0.0f, 0.0f };
 	camera.up = Vector3{ 0.0f, 1.0f, 0.0f };
-	camera.fovy = 45.0f;
+	camera.fovy = 55.0f;
 	camera.projection = CAMERA_PERSPECTIVE;
 
 	spdlog::debug("Creating Physics World");
@@ -88,13 +88,15 @@ int main(int argc, char** args)
 			.cameraZoomDelta = -GetMouseWheelMove(), 
 			.cameraOrbitDelta = GetMouseDelta()
 		};
+
 		character.update(controls, physicsWorld);
         	BeginDrawing();
-            		ClearBackground(GRAY);
+            	ClearBackground(GRAY);
 				BeginBlendMode(BLEND_ALPHA);
 			BeginMode3D(character.camera);
 				//DrawModel(tiby, {0, 0, 0}, 1.f, RAYWHITE);
-				ground.draw();//Colored(GREEN);
+				//ground.draw(); //Colored(GREEN);
+				ground.drawColored(GREEN);
 				character.drawColored({ 135, 60, 190, 128 });
 			EndMode3D();
 			EndBlendMode();
