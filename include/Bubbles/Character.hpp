@@ -162,25 +162,25 @@ namespace Bubbles
 			btVector3 delta(0, 0, 0);
 			if(controls.forward == true) {
 				tibyLook = forward;
-				delta = r2bv(right * -torqueScalar);
+				delta += r2bv(right * -torqueScalar);
 				++pressTime;
 				spdlog::trace("Forward");
 			}
 			if(controls.backward == true) {
 				tibyLook = -1.f * forward;
-				delta = r2bv(right * torqueScalar);
+				delta += r2bv(right * torqueScalar);
 				++pressTime;
 				spdlog::trace("Backward");
 			}
 			if(controls.left == true) {
 				tibyLook = -1.f * right;
-				delta = r2bv(forward * -torqueScalar);
+				delta += r2bv(forward * -torqueScalar);
 				++pressTime;
 				spdlog::trace("Left");
 			}
 			if(controls.right == true) {
 				tibyLook = right;
-				delta = r2bv(forward * torqueScalar);
+				delta += r2bv(forward * torqueScalar);
 				++pressTime;
 				spdlog::trace("Right");
 			}
