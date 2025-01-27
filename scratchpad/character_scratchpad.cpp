@@ -92,7 +92,7 @@ int main(int argc, char** args)
 		character.update(controls, physicsWorld);
         	BeginDrawing();
             	ClearBackground(GRAY);
-				BeginBlendMode(BLEND_ALPHA);
+			BeginBlendMode(BLEND_ALPHA);
 			BeginMode3D(character.camera);
 				ground.draw();
 				character.drawColored({ 135, 60, 190, 128 });

@@ -48,7 +48,7 @@ namespace Bubbles
 		float torqueScalar;
 		float jumpForce;
 		size_t jumpCoolDownReset = 200;
-		bool gizmo = true;
+		bool gizmo = false;
 		Tiby tiby;
 		Vector3 tibyLook = { 0 };
 		Character(
@@ -164,21 +164,25 @@ namespace Bubbles
 				tibyLook = forward;
 				delta = r2bv(right * -torqueScalar);
 				++pressTime;
+				spdlog::trace("Forward");
 			}
 			if(controls.backward == true) {
 				tibyLook = -1.f * forward;
 				delta = r2bv(right * torqueScalar);
 				++pressTime;
+				spdlog::trace("Backward");
 			}
 			if(controls.left == true) {
 				tibyLook = -1.f * right;
 				delta = r2bv(forward * -torqueScalar);
 				++pressTime;
+				spdlog::trace("Left");
 			}
 			if(controls.right == true) {
 				tibyLook = right;
 				delta = r2bv(forward * torqueScalar);
 				++pressTime;
+				spdlog::trace("Right");
 			}
 			const bool directionControlPressed = (
 				controls.right 

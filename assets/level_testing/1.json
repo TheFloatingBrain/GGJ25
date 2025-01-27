@@ -1,0 +1,17 @@
+{
+	boxes : [
+		{
+			size : [10.0, 10.0, 10.0], 
+			position : [10.0, 20.0, 30.0], 
+			orientation : [0.0, 20.0, 30.0], 
+			type : "ground"
+		}, 
+		{
+			size : [10.0, 10.0, 10.0], 
+			position : [50.0, 5.0, -40.0], 
+			orientation : [45, 45, 45], 
+			type : "ground"
+		}
+	]
+}
+
