@@ -1,4 +1,6 @@
-# GGJ25![output](https://github.com/user-attachments/assets/39581628-e7eb-4c37-a69a-9aa2a24f8499)
+# GGJ25
+
+![output](https://github.com/user-attachments/assets/39581628-e7eb-4c37-a69a-9aa2a24f8499)
 
 ![Screenshot From 2025-01-26 22-15-29](https://github.com/user-attachments/assets/900d10d3-c40f-4390-b4a2-c33473fafc7d)
 
