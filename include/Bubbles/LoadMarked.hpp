@@ -1,5 +1,6 @@
 #include <Bubbles/Common.hpp>
 #include <Bubbles/GameObject.hpp>
+#include <Bubbles/VectorUtilities.hpp>
 #include <unordered_map>
 
 #ifndef BUBBLES_LOAD_MARKED_INCLUDE_GUARD
@@ -83,6 +84,7 @@ namespace Bubbles
 		Color color;
 	};
 
+
 	inline BasicObjectInfo basicObjectInfoFromJson(const auto& jsonNode)
 	{
 		PhysicsCreationInfo info{};
@@ -92,7 +94,7 @@ namespace Bubbles
 		if(jsonNode.contains("position") == true)
 			info.startLocation = vector3FromJsonArray(jsonNode["position"]);
 		if(jsonNode.contains("orientation") == true)
-			info.orientation = vector3FromJsonArray(jsonNode["orientation"]);
+			info.orientation = degrees2Radians(vector3FromJsonArray(jsonNode["orientation"]));
 		resolvePhysicsInfoBasedOnType(info, type);
 		if(jsonNode.contains("mass") == true)
 			info.mass = jsonNode["mass"];
@@ -207,11 +209,13 @@ namespace Bubbles
 		bool loadObjectsFromFile(std::string_view path)
 		{
 			std::ifstream levelStream(path.data());
-			if(levelStream.is_open() == false)
+			if(levelStream.is_open() == false) {
+				spdlog::error("Failed to load level from file {}", path);
 				return false;
+			}
 			auto data = json::parse(levelStream);
 			loadObjects(data);
-
+			return true;
 		}
 		void loadObjects(const auto& jsonData) {
 			objectsFromJson(levelObjects, objectTypes, colors, jsonData);

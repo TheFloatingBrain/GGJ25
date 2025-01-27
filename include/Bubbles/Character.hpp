@@ -4,11 +4,15 @@
 
 namespace Bubbles
 {
-	struct Controls {
+	struct Controls
+	{
 		bool forward, backward, left, right, jump;
 		float cameraZoomDelta;
 		::Vector2 cameraOrbitDelta;
 		float orbitSensitivity = 0.003f;
+		bool fly = false;
+		bool up = false;
+		bool down = false;
 	};
 
 	struct Tiby
@@ -20,6 +24,7 @@ namespace Bubbles
 	
 		Tiby()
 		{
+			spdlog::debug("Creating/Loading Tiby");
 			tiby = LoadModel("assets/characters/tiby/tiby.glb");
 			bodyImage = LoadImage("assets/characters/tiby/Tiby_Texture.png");
 			hairImage = LoadImage("assets/characters/tiby/Tiby_Texture_Hair.png");
@@ -51,6 +56,7 @@ namespace Bubbles
 		bool gizmo = false;
 		Tiby tiby;
 		Vector3 tibyLook = { 0 };
+		bool traceInput = false;
 		Character(
 			Camera camera_, 
 			::Vector3 position = { 0 }, 
@@ -96,7 +102,10 @@ namespace Bubbles
 		{
 			orbitalCameraControls(controls);
 			angularVelocityControls(controls);
-			jumpControls(controls);
+			if(controls.fly == true)
+				flyingControls(controls);
+			else
+				jumpControls(controls);
 		}
 
 		void orbitalCameraControls(const Controls controls)
@@ -154,6 +163,21 @@ namespace Bubbles
 				--jumpCoolDown;
 		}
 
+		void flyingControls(const Controls controls)
+		{
+			auto forward = objectForwardVector();
+			auto right = GetCameraRight(&camera);
+			auto up = ::Vector3 {0,1,0};
+			Vector3 translate = { 0 };
+			if(controls.forward == true) translate += forward;
+			if(controls.backward == true) translate += -1.f * forward;
+			if(controls.left == true) translate += right;
+			if(controls.right == true) translate += -1.f * right;
+			if(controls.up == true) translate += up;
+			if(controls.down == true) translate += -1.f * up;
+			this->body().translate(r2bv(translate));
+		}
+
 		void angularVelocityControls(const Controls controls)
 		{
 			auto forward = objectForwardVector();
@@ -164,25 +188,25 @@ namespace Bubbles
 				tibyLook = forward;
 				delta += r2bv(right * -torqueScalar);
 				++pressTime;
-				spdlog::trace("Forward");
+				if(traceInput) spdlog::trace("Forward");
 			}
 			if(controls.backward == true) {
 				tibyLook = -1.f * forward;
 				delta += r2bv(right * torqueScalar);
 				++pressTime;
-				spdlog::trace("Backward");
+				if(traceInput) spdlog::trace("Backward");
 			}
 			if(controls.left == true) {
 				tibyLook = -1.f * right;
 				delta += r2bv(forward * -torqueScalar);
 				++pressTime;
-				spdlog::trace("Left");
+				if(traceInput) spdlog::trace("Left");
 			}
 			if(controls.right == true) {
 				tibyLook = right;
 				delta += r2bv(forward * torqueScalar);
 				++pressTime;
-				spdlog::trace("Right");
+				if(traceInput) spdlog::trace("Right");
 			}
 			const bool directionControlPressed = (
 				controls.right 
