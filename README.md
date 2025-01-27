@@ -65,3 +65,6 @@ or
 ```
 
 
+# Credit
+
+Credit to https://opengameart.org/content/tiby-3d-rigged-model for the Character Model!
