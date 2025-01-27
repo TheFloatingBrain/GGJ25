@@ -1,6 +1,6 @@
 # GGJ25
 
-![output2](https://github.com/user-attachments/assets/5c4f599e-5b53-4896-879f-71cc8f686ca5)
+![output2](assets/outpu2.gif)
 
 ![Screenshot From 2025-01-26 22-15-29](https://github.com/user-attachments/assets/900d10d3-c40f-4390-b4a2-c33473fafc7d)
 
