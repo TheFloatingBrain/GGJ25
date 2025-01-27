@@ -74,7 +74,6 @@ message("Bullet3 Physics Engine Include Directory Made Availible")
 #add_library(${PROJECT_NAME} ${LIBRARY_SOURCES})
 #target_link_libraries(${PROJECT_NAME} PRIVATE OpenCL af afopencl)
 add_executable(scratchpad ${SCRATCHPAD_SOURCE})
-add_compile_options("-g")
 target_link_libraries(scratchpad PRIVATE 
 #	ftxui::component 
 #	ftxui::dom 
@@ -86,7 +85,6 @@ target_link_libraries(scratchpad PRIVATE
 	LinearMath
 )
 add_executable(character_scratchpad scratchpad/character_scratchpad.cpp)
-add_compile_options("-g")
 target_link_libraries(character_scratchpad PRIVATE 
 #	ftxui::component 
 #	ftxui::dom 
@@ -98,8 +96,18 @@ target_link_libraries(character_scratchpad PRIVATE
 	LinearMath
 )
 add_executable(physics_scratchpad scratchpad/physics_scratchpad.cpp)
-add_compile_options("-g")
 target_link_libraries(physics_scratchpad PRIVATE 
+#	ftxui::component 
+#	ftxui::dom 
+#	ftxui::screen
+	spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
+	raylib 
+	BulletDynamics 
+	BulletCollision 
+	LinearMath
+)
+add_executable(level_scratchpad scratchpad/level_scratchpad.cpp)
+target_link_libraries(level_scratchpad PRIVATE
 #	ftxui::component 
 #	ftxui::dom 
 #	ftxui::screen
