@@ -40,7 +40,6 @@ namespace Bubbles
 		}
 	};
 
-
 	struct Character : public PhysicsGameObject
 	{
 		::Camera camera;
@@ -48,8 +47,8 @@ namespace Bubbles
 		float radius;
 		float torqueScalar;
 		float jumpForce;
-		size_t jumpCoolDownReset = 100;
-		bool gizmo = false;
+		size_t jumpCoolDownReset = 200;
+		bool gizmo = true;
 		Tiby tiby;
 		Vector3 tibyLook = { 0 };
 		Character(
@@ -70,8 +69,8 @@ namespace Bubbles
 		torqueScalar(torqueScalar_), 
 		jumpForce(jumpForce_)
 		{
-			body().setSpinningFriction(100.f);
-			body().setRollingFriction(100.f);
+			body().setSpinningFriction(200.f);
+			body().setRollingFriction(10.f);
 			auto& shape = physicsData.shape.shapeRef();
 			body().setAnisotropicFriction(
 					shape.getAnisotropicRollingFrictionDirection(), 
@@ -129,12 +128,14 @@ namespace Bubbles
 		void jumpControls(const Controls controls)
 		{
 			Vector3 jumpDirection = { 0 };
-			if(controls.jump == true && jumpCoolDown <= 0)
+			if((controls.jump == true && jumpCoolDown <= 0) && (std::abs(body().getLinearVelocity().getY()) < (EPSILON * 10.f)))
 			{
-				spdlog::debug("JUMP");
+
+				// This seems flawed. There shouldn't be a need to change the direction based on what direction you're pressing.
+				//spdlog::debug("JUMP");
 				auto forward = objectForwardVector();
 				auto right = GetCameraRight(&camera);
-				auto up = objectUpVector();
+				auto up = ::Vector3 {0,1,0};
 				jumpDirection = up;
 				if(controls.forward == true)
 					jumpDirection = forward;
@@ -190,7 +191,7 @@ namespace Bubbles
 				tibyLook = { 0 };
 			}
 			float time = static_cast<float>(pressTime);
-			this->body().setAngularVelocity(delta + (1 / time) * this->body().getAngularVelocity());
+			this->body().setAngularVelocity(delta);// + (1 / time) * this->body().getAngularVelocity());
 		}
 
 		void drawObjectGizmo()
@@ -222,7 +223,8 @@ namespace Bubbles
 			);
 		}
 
-		void exportMesh(const char* fileName) {
+		void exportMesh(const char* fileName)
+		{
 			spdlog::info("Exporting mesh to file {}", fileName);
 			ExportMesh(mesh, fileName);
 		}
@@ -234,9 +236,9 @@ namespace Bubbles
 			auto movementDirection = Vector3Normalize(b2rv(body().getLinearVelocity()));
 			//movementDirection = Vector3{-movementDirection.x, movementDirection.y};
 			tiby.draw(
-				getPosition() + ::Vector3{0, -radius + .1f, 0}, 
+				getPosition() + ::Vector3{0, -radius + .1f, 0},
 				directionToYAngle(Vector3Normalize(tibyLook + movementDirection))
-			);
+			);	
 			PhysicsGameObject::drawColored(color);
 		}
 
