@@ -55,6 +55,10 @@ namespace Bubbles
 	inline float directionToYAngle(Vector3 direction) {
 		return std::atan2(direction.x, direction.z);
 	}
+
+	inline Vector3 degrees2Radians(Vector3 from) {
+		return Vector3{PI * from.x / 180.f, PI * from.y / 180.f, PI * from.z / 180.f};
+	}
 }
 #endif // BUBBLES_VECTOR_UTILITIES_INCLUDE_GUARD
 

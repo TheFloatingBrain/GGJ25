@@ -1,6 +1,7 @@
 #include <Bubbles/Physics.hpp>
 #include <Bubbles/Character.hpp>
 #include <Bubbles/MeshUtilities.hpp>
+#include <Bubbles/LoadMarked.hpp>
 
 using namespace Bubbles;
 
@@ -39,9 +40,6 @@ int main(int argc, char** args)
 	DisableCursor();
 	SetTargetFPS(120);
 
-	spdlog::debug("Creating/Loading Tiby");
-	Tiby tiby;
-
 	spdlog::debug("Creating/Loading Materials");
 	Image groundImage = GenImageCellular(512, 512, 16);
 	Material groundMaterial = LoadMaterialDefault();
@@ -72,9 +70,13 @@ int main(int argc, char** args)
 	physicsWorld.addGameObject(character);
 	physicsWorld.addGameObject(ground);
 
+	spdlog::debug("Loading Level");
+	Level level("assets/level_testing/1.json", physicsWorld);
 
 	spdlog::debug("Beggining game Loop");
 	
+	bool flyMode = false;
+	size_t flyModeCoolDown = 20;
 	while (!WindowShouldClose())
 	{
 		physicsWorld.step();
@@ -86,8 +88,22 @@ int main(int argc, char** args)
 			.right = IsKeyDown(KEY_D), 
 			.jump = IsKeyDown(KEY_SPACE), 
 			.cameraZoomDelta = -GetMouseWheelMove(), 
-			.cameraOrbitDelta = GetMouseDelta()
+			.cameraOrbitDelta = GetMouseDelta(), 
+			.fly = IsKeyDown(KEY_G), 
+			.up = IsKeyDown(KEY_SPACE), 
+			.down = IsKeyDown(KEY_C)
 		};
+		flyModeCoolDown += (flyModeCoolDown > 0) ? -1 : 0;
+		if(controls.fly != flyMode)
+		{
+			if(flyModeCoolDown > 0)
+				controls.fly = flyMode;
+			else {
+				spdlog::debug("Fly Mode Toggled");
+				flyMode = controls.fly;
+			}
+			flyModeCoolDown = 20;
+		}
 
 		character.update(controls, physicsWorld);
         	BeginDrawing();
@@ -95,6 +111,7 @@ int main(int argc, char** args)
 			BeginBlendMode(BLEND_ALPHA);
 			BeginMode3D(character.camera);
 				ground.draw();
+				level.drawObjects();
 				character.drawColored({ 135, 60, 190, 128 });
 			EndMode3D();
 			EndBlendMode();
