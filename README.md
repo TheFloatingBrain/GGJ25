@@ -10,6 +10,12 @@
  - Physics Demo
  - Character Demo
 
+
+# Art Credit
+
+Credit to Open Game Art User [PINKCANON](https://opengameart.org/users/pinkcannon) for the [Character Model](https://opengameart.org/content/tiby-3d-rigged-model)!
+
+
 # How To Build
 
 ## Linux
@@ -64,7 +70,3 @@ or
 .\physics_scratchpad
 ```
 
-
-# Credit
-
-Credit to Open Game Art User [PINKCANON](https://opengameart.org/users/pinkcannon) for the [Character Model](https://opengameart.org/content/tiby-3d-rigged-model)!
