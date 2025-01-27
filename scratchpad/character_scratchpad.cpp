@@ -79,22 +79,20 @@ int main(int argc, char** args)
 	{
 		physicsWorld.step();
 
-		Controls controls{
-			.forward = IsKeyDown(KEY_W), 
-			.backward = IsKeyDown(KEY_S), 
-			.left = IsKeyDown(KEY_A), 
-			.right = IsKeyDown(KEY_D), 
-			.jump = IsKeyDown(KEY_SPACE), 
-			.cameraZoomDelta = -GetMouseWheelMove(), 
-			.cameraOrbitDelta = GetMouseDelta()
-		};
+		Controls controls{};
+		controls.forward = IsKeyDown(KEY_W);
+		controls.backward = IsKeyDown(KEY_S);
+		controls.left = IsKeyDown(KEY_A);
+		controls.right = IsKeyDown(KEY_D);
+		controls.jump = IsKeyDown(KEY_SPACE);
+		controls.cameraZoomDelta = -GetMouseWheelMove();
+		controls.cameraOrbitDelta = GetMouseDelta();
 		character.update(controls, physicsWorld);
         	BeginDrawing();
             		ClearBackground(GRAY);
-				BeginBlendMode(BLEND_ALPHA);
+			BeginBlendMode(BLEND_ALPHA);
 			BeginMode3D(character.camera);
-				//DrawModel(tiby, {0, 0, 0}, 1.f, RAYWHITE);
-				ground.draw();//Colored(GREEN);
+				ground.draw();
 				character.drawColored({ 135, 60, 190, 128 });
 			EndMode3D();
 			EndBlendMode();
